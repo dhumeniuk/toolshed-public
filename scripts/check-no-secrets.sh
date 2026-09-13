@@ -5,7 +5,7 @@ SECRET_PATTERNS=(
   'sk_live_[0-9a-zA-Z]+'
   'sk_test_[0-9a-zA-Z]+'
   'AKIA[0-9A-Z]{16}'
-  'AIza[0-9A-Za-z\-_]{35}'
+  'AIza[0-9A-Za-z_-]{35}'
   'ghp_[0-9a-zA-Z]{36}'
   'xoxb-[0-9]+-[0-9a-zA-Z]+'
   'access_token\s*=\s*["\x27][^"]+["\x27]'
