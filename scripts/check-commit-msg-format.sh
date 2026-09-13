@@ -9,14 +9,16 @@ if echo "$STRIPPED_MSG" | head -1 | grep -qE '^doc: .+'; then
   exit 0
 fi
 
-# Format: <type>(<scope>): ([<issue>]) <description>
-# Scope and issue ID are optional.
+# Format: <type>(<scope>): ([<issue-or-backlog-id>]) <description>
+# Scope and issue/backlog ID are optional. The ID may be a numeric GitHub
+# issue number or an alphanumeric backlog item id (e.g. from a Personal
+# Assistant "software-backlog" item).
 TYPES='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert'
-COMMIT_FORMAT_RE="^($TYPES)(\([^)]+\))?: (\[[0-9]+\] )?.+"
+COMMIT_FORMAT_RE="^($TYPES)(\([^)]+\))?: (\[[A-Za-z0-9-]+\] )?.+"
 
 if ! echo "$STRIPPED_MSG" | head -1 | grep -qE "$COMMIT_FORMAT_RE"; then
   echo "error: commit message does not follow the required format"
-  echo "  expected: <type>(<scope>): ([<issue>]) <description>"
+  echo "  expected: <type>(<scope>): ([<issue-or-backlog-id>]) <description>"
   echo "  types: $TYPES"
   echo "  example: feat(auth): [42] add login endpoint"
   echo "  got: $(echo "$STRIPPED_MSG" | head -1)"
