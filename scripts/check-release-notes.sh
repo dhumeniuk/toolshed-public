@@ -25,7 +25,7 @@ if [[ ! -f "$RELEASE_NOTES" ]]; then
   exit 1
 fi
 
-# Read issue title from cache written by check-gh-issue.sh, or fall back to gh
+# Read issue title from cache written by check-backlog-item.sh, or fall back to gh
 CACHE_FILE="/tmp/gh-issue-${ISSUE_ID}-title"
 if [[ -f "$CACHE_FILE" ]]; then
   ISSUE_TITLE="$(cat "$CACHE_FILE")"

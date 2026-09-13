@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-COMMIT_MSG_FILE="${1:?usage: check-gh-issue.sh <commit-msg-file>}"
+COMMIT_MSG_FILE="${1:?usage: check-backlog-item.sh <commit-msg-file>}"
 STRIPPED_MSG="$(grep -v '^#' "$COMMIT_MSG_FILE" || true)"
 
 # Skip if all staged changes are markdown files
