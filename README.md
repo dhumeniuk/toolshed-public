@@ -10,10 +10,11 @@ Install it as a pinned dev dependency, straight from GitHub (it isn't
 published to the npm registry):
 
 ```bash
-npm install --save-dev github:dhumeniuk/toolshed-public#v1.0.0
+npm install --save-dev github:dhumeniuk/toolshed-public#<commit-sha>
 ```
 
-`package-lock.json` then records the exact commit, so local checkouts,
+Pin a full commit SHA (or a `v*` tag, if one exists for the release) so
+nothing changes under you; `package-lock.json` records the exact commit, so local checkouts,
 cloud sessions and CI all run the same scripts, and `npm install` / `npm ci`
 is the only setup step — no separate clone, no `TOOLSHED_PUBLIC` env var.
 
@@ -48,7 +49,7 @@ and from CI after `npm ci`, e.g. `npx --no-install check-no-secrets` with
 
 ## Releasing a change
 
-Commit to `main`, bump `version` in `package.json`, and tag it
-(`git tag v1.1.0 && git push origin v1.1.0`). Consuming repos pick it up
-by changing the `#v…` ref in their `package.json` and running
-`npm install` — never automatically.
+Commit to `main` and bump `version` in `package.json` (optionally tag it,
+e.g. `git tag v1.1.0 && git push origin v1.1.0`). Consuming repos pick it
+up by changing the `#…` ref in their `package.json` to the new commit (or
+tag) and running `npm install` — never automatically.
