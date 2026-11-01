@@ -1,0 +1,23 @@
+{
+  "name": "toolshed-public",
+  "version": "1.0.0",
+  "description": "Shared git hook scripts (secrets scan, commit message checks) for dhumeniuk repos",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dhumeniuk/toolshed-public.git"
+  },
+  "files": [
+    "scripts"
+  ],
+  "bin": {
+    "check-backlog-item": "scripts/check-backlog-item.sh",
+    "check-commit-msg-format": "scripts/check-commit-msg-format.sh",
+    "check-desc-match": "scripts/check-desc-match.sh",
+    "check-doc-commit-files": "scripts/check-doc-commit-files.sh",
+    "check-no-secrets": "scripts/check-no-secrets.sh",
+    "check-release-notes": "scripts/check-release-notes.sh",
+    "check-roadmap": "scripts/check-roadmap.sh"
+  }
+}
