@@ -1,12 +1,14 @@
 {
-  "name": "toolshed-public",
-  "version": "1.0.0",
+  "name": "@dhumeniuk/toolshed-public",
+  "version": "1.1.0",
   "description": "Shared git hook scripts (secrets scan, commit message checks) for dhumeniuk repos",
-  "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/dhumeniuk/toolshed-public.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "scripts"
