@@ -13,37 +13,20 @@ fi
 TRACKED_ID="$(echo "$STRIPPED_MSG" | head -1 | grep -oE '\[[A-Za-z0-9-]+\]' | tr -d '[]' || true)"
 if [[ -z "$TRACKED_ID" ]]; then
   echo "error: no tracked-item reference found in commit message [$STRIPPED_MSG]"
-  echo "  expected a bracketed reference, e.g. [42] (GitHub issue) or [<backlog-item-id>]"
-  echo "  create the issue or backlog item before committing"
+  echo "  expected a bracketed backlog item id, e.g. [HA-1]"
+  echo "  create the backlog item with the Personal Assistant MCP tool (create_page_item) before committing"
   exit 1
 fi
 
-# Numeric references are treated as GitHub issue numbers and verified to
-# exist, same as before — this also feeds the title cache that
-# check-release-notes.sh depends on for repos still using GitHub issues.
-if [[ "$TRACKED_ID" =~ ^[0-9]+$ ]]; then
-  if ! command -v gh &>/dev/null; then
-    echo "error: 'gh' not found — required to verify GitHub issue #$TRACKED_ID" >&2
-    exit 1
-  fi
-
-  if ! gh auth status &>/dev/null 2>&1; then
-    echo "error: not authenticated with gh — required to verify GitHub issue #$TRACKED_ID" >&2
-    exit 1
-  fi
-
-  ISSUE_TITLE="$(gh issue view "$TRACKED_ID" --json title -q .title 2>/dev/null || true)"
-  if [[ -z "$ISSUE_TITLE" ]]; then
-    echo "error: GitHub issue #$TRACKED_ID not found"
-    echo "  create the issue before committing, or check you are in the correct repo"
-    exit 1
-  fi
-
-  # Cache the title for other hooks in this git operation
-  echo "$ISSUE_TITLE" > "/tmp/gh-issue-${TRACKED_ID}-title"
+# Backlog item ids come from the Personal Assistant's per-project counter
+# (PageItemCounter keyed on (pageType, key) — see nextBacklogDisplayId),
+# e.g. HA-1 (home-assistant), PS-2 (pair-split), PA-3 (personal-assistant).
+# There is no scriptable way for a git hook to look these up (they live
+# behind an MCP tool, not a CLI/API a script can call), so we only check
+# the id has the expected <PREFIX>-<number> shape.
+if [[ ! "$TRACKED_ID" =~ ^[A-Za-z]+-[0-9]+$ ]]; then
+  echo "error: invalid tracked-item reference [$TRACKED_ID]"
+  echo "  expected a backlog item id, e.g. [HA-1]"
+  echo "  create/list backlog items with the Personal Assistant MCP tool (create_page_item / list_page_items)"
+  exit 1
 fi
-
-# Non-numeric references (e.g. a Personal Assistant backlog item id) are
-# accepted as-is — there is no scriptable way for a git hook to look those
-# up (they live behind an MCP tool, not a CLI/API a script can call), so we
-# only check that a reference is present in the commit message.
