@@ -6,17 +6,17 @@ doc-only commits, release notes, roadmap).
 
 ## Using it from a repo
 
-Install it as a pinned dev dependency, straight from GitHub (it isn't
-published to the npm registry):
+Install it as a pinned dev dependency from the npm registry:
 
 ```bash
-npm install --save-dev github:dhumeniuk/toolshed-public#<commit-sha>
+npm install --save-dev --save-exact @dhumeniuk/toolshed-public@<version>
 ```
 
-Pin a full commit SHA (or a `v*` tag, if one exists for the release) so
-nothing changes under you; `package-lock.json` records the exact commit, so local checkouts,
-cloud sessions and CI all run the same scripts, and `npm install` / `npm ci`
-is the only setup step — no separate clone, no `TOOLSHED_PUBLIC` env var.
+Pin an exact version (`--save-exact`) so nothing changes under you;
+`package-lock.json` records the exact tarball, so local checkouts, cloud
+sessions and CI all run the same scripts, and `npm install` / `npm ci` is
+the only setup step — no GitHub access, no separate clone, no
+`TOOLSHED_PUBLIC` env var.
 
 Each script is a `bin`, named after the file without `.sh`. Call them from
 `lefthook.yml` with `npx --no-install` (so a missing install fails fast
@@ -49,7 +49,15 @@ and from CI after `npm ci`, e.g. `npx --no-install check-no-secrets` with
 
 ## Releasing a change
 
-Commit to `main` and bump `version` in `package.json` (optionally tag it,
-e.g. `git tag v1.1.0 && git push origin v1.1.0`). Consuming repos pick it
-up by changing the `#…` ref in their `package.json` to the new commit (or
-tag) and running `npm install` — never automatically.
+1. Commit to `main` and bump `version` in `package.json` (semver).
+2. Publish it: `npm publish` (the `publishConfig` makes the scoped package
+   public). Needs an npm token with publish rights for the `@dhumeniuk`
+   scope.
+3. Optionally tag it: `git tag v1.1.0 && git push origin v1.1.0`.
+
+Consuming repos pick it up by bumping the version in their `package.json`
+and running `npm install` — never automatically.
+
+Versions up to 1.0.0 were only installable from GitHub
+(`github:dhumeniuk/toolshed-public#<sha>`); 1.1.0 is the first release on
+the npm registry.
