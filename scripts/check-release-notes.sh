@@ -11,11 +11,11 @@ if echo "$STRIPPED_MSG" | head -1 | grep -qE '^doc: .+'; then
 fi
 
 FIRST_LINE="$(echo "$STRIPPED_MSG" | head -1)"
-# Extract issue number like [123] -> 123
-ISSUE_ID="$(echo "$FIRST_LINE" | grep -oE '\[[0-9]+\]' | tr -d '[]' || echo "")"
+# Extract backlog item id like [HA-1] -> HA-1
+TRACKED_ID="$(echo "$FIRST_LINE" | grep -oE '\[[A-Za-z]+-[0-9]+\]' | tr -d '[]' || echo "")"
 
-# No issue ID in commit — nothing to check
-if [[ -z "$ISSUE_ID" ]]; then
+# No backlog item id in commit — nothing to check
+if [[ -z "$TRACKED_ID" ]]; then
   exit 0
 fi
 
@@ -25,25 +25,12 @@ if [[ ! -f "$RELEASE_NOTES" ]]; then
   exit 1
 fi
 
-# Read issue title from cache written by check-backlog-item.sh, or fall back to gh
-CACHE_FILE="/tmp/gh-issue-${ISSUE_ID}-title"
-if [[ -f "$CACHE_FILE" ]]; then
-  ISSUE_TITLE="$(cat "$CACHE_FILE")"
-elif command -v gh &>/dev/null; then
-  ISSUE_TITLE="$(gh issue view "$ISSUE_ID" --json title -q .title 2>/dev/null || echo "")"
-else
-  echo "error: gh CLI not found and no cache — cannot verify release notes"
-  exit 1
-fi
-
-if [[ -z "$ISSUE_TITLE" ]]; then
-  echo "error: could not fetch title for issue #$ISSUE_ID"
-  exit 1
-fi
-
-# Check that "- <issue_id>: <issue_title>" exists in RELEASE_NOTES.md
-if ! grep -qF -- "- $ISSUE_ID: $ISSUE_TITLE" "$RELEASE_NOTES"; then
+# There is no scriptable way to fetch a backlog item's title (it lives
+# behind an MCP tool, not a CLI/API a script can call), so we only check
+# that an entry for this id was added to RELEASE_NOTES.md.
+if ! grep -qE -- "^- $TRACKED_ID: .+" "$RELEASE_NOTES"; then
   echo "error: release note entry not found in RELEASE_NOTES.md"
-  echo "  expected: '- $ISSUE_ID: $ISSUE_TITLE'"
+  echo "  expected: '- $TRACKED_ID: <summary>'"
+  echo "  look up the item's title with the Personal Assistant MCP tool (list_page_items) if needed"
   exit 1
 fi

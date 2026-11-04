@@ -43,7 +43,7 @@ and from CI after `npm ci`, e.g. `npx --no-install check-no-secrets` with
 | `check-commit-msg-format` | commit-msg | `<type>(<scope>): ([<id>]) <description>`                      |
 | `check-backlog-item`      | commit-msg | A `[<id>]` reference unless the commit is `.md`-only           |
 | `check-doc-commit-files`  | commit-msg | `doc:` commits touch only `.md` files                          |
-| `check-release-notes`     | commit-msg | `RELEASE_NOTES.md` lists the referenced GitHub issue           |
+| `check-release-notes`     | commit-msg | `RELEASE_NOTES.md` has a `- <id>: …` row for the referenced item |
 | `check-desc-match`        | commit-msg | Commit description matches its `RELEASE_NOTES.md` row          |
 | `check-roadmap`           | commit-msg | Referenced issue was removed from `ROADMAP.md`                 |
 
